@@ -1,12 +1,10 @@
 package com.project.employeeleavemanagement.service;
-
-
 import com.project.employeeleavemanagement.entity.Users;
 import com.project.employeeleavemanagement.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import java.security.SecureRandom;
 
 
 @Service
@@ -22,8 +20,7 @@ public class UserService {
             user.setManagerId("54321");
             userRepository.save(user);
         }catch (Exception e){
-//            throw new RuntimeException("A user with the username '" + user.getUserName() + "' already exists.");
-            log.error("hh");
+            throw new RuntimeException("A user with the username '" + user.getUserName() + "' already exists.");
         }
     }
 
@@ -35,5 +32,7 @@ public class UserService {
         return users.getPassword().equals(password)?users:null;
 
     }
+
+
 
 }

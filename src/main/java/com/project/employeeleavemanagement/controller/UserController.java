@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@CrossOrigin(origins = "http://192.168.1.9:3000")
+@CrossOrigin(origins = "http://192.168.1.1:3000")
 @RequestMapping("/user")
 public class UserController {
 
@@ -31,16 +32,14 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<UserDTO> loginUser(@RequestBody LoginRequest loginRequest) {
+
         String userName = loginRequest.getUserName();
         String password = loginRequest.getPassword();
         System.out.println("Received login attempt: Username = " + userName);
         UserDTO user = UsersMapper.toDTO(userService.login(userName, password));
-        if (user.getUserId() != null) {
-            // Assuming userService.login() returns the UserDTO containing userId
-            return ResponseEntity.ok(user); // Send userId and other details to the frontend
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
+        return ResponseEntity.ok(user); // Send userId and other details to the frontend
     }
-
 }
